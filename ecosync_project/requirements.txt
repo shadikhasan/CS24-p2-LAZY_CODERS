@@ -1,0 +1,4 @@
+Django
+drf-nested-routers
+djangorestframework
+reportlab

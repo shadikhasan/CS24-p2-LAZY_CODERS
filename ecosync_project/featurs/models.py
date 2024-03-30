@@ -79,7 +79,7 @@ class Billing(models.Model):
     BillID = models.AutoField(primary_key=True)
     Vehicle = models.ForeignKey('Vehicle', on_delete=models.CASCADE)
     WeekNumber = models.IntegerField()
-    VolumeOfWaste = models.DecimalField(max_digits=10, decimal_places=2)
+    VolumeOfWaste = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='VolumeOfWaste')
     Distance = models.DecimalField(max_digits=10, decimal_places=2)
     CreatedAt = models.DateTimeField(auto_now_add=True)
     UpdatedAt = models.DateTimeField(auto_now=True)
