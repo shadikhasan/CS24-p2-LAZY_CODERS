@@ -73,7 +73,7 @@ def download_pdf(self, request, queryset):
     pdf.save()
     return response
 
-download_pdf.short_description = 'Download selected items as PDF.'
+download_pdf.short_description = 'Download selected item as PDF.'
     
     
 
@@ -89,7 +89,8 @@ class SecondaryTransferStationAdmin(admin.ModelAdmin):
     list_display = ['STSID', 'WardNumber', 'Capacity', 'GPSLatitude', 'GPSLongitude', 'Manager', 'CreatedAt', 'UpdatedAt']
 @admin.register(Landfill)
 class LandfillAdmin(admin.ModelAdmin):
-    list_display = ['LandfillID', 'Name', 'Location', 'Manager', 'CreatedAt', 'UpdatedAt']
+    autocomplete_fields = ['Manager',]
+    list_display = ['LandfillID', 'Name', 'Location', 'Manager', 'Capacity', 'CreatedAt', 'UpdatedAt']
 
 @admin.register(WasteTransfer)
 class WasteTransferAdmin(admin.ModelAdmin):
@@ -149,3 +150,24 @@ class RoleAdmin(admin.ModelAdmin):
 @admin.register(Route)
 class RouteAdmin(admin.ModelAdmin):
     list_display = ['RouteID', 'Source', 'Destination', 'Distance', 'EstimatedTime', 'CreatedAt', 'UpdatedAt']
+
+@admin.register(LandfillManager)
+class LandfillManagerAdmin(admin.ModelAdmin):
+    list_display = ['manager_name', 'landfill']
+
+    def manager_name(self, obj):
+        return obj.user.username  # Assuming 'username' is the field you want to display
+
+    manager_name.short_description = 'Manager Name'  # Customizing the column header
+@admin.register(STSManager)
+class STSManagerAdmin(admin.ModelAdmin):
+    list_display = ['manager_name', 'sts_ward']
+
+    def manager_name(self, obj):
+        return obj.user.username  # Assuming 'username' is the field you want to display
+
+    def sts_ward(self, obj):
+        return obj.sts.WardNumber  # Assuming 'WardNumber' is the field you want to display
+
+    manager_name.short_description = 'Manager Name'  # Customizing the column header
+    sts_ward.short_description = 'STS Ward Number'  # Customizing the column header

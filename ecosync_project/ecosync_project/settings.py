@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'user_management',
     'profile_management',
     'rbac',
+    'custom_api',
     'featurs',
 ]
 

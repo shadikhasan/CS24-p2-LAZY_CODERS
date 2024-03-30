@@ -1,4 +1,7 @@
 from django.db import models
+from django.conf import settings
+
+
 class Vehicle(models.Model):
     VEHICLE_TYPES = [
         ('Open Truck', 'Open Truck'),
@@ -42,7 +45,7 @@ class Landfill(models.Model):
     Name = models.CharField(max_length=100)
     Location = models.CharField(max_length=255)
     Manager = models.ForeignKey('ecosync.CustomUser', on_delete=models.CASCADE)
-    Capacity = models.DecimalField(max_digits=10, decimal_places=2, default=100)  # Default capacity of the landfill
+    Capacity = models.DecimalField(max_digits=10, decimal_places=2)  # Default capacity of the landfill
     OperationalTimespan = models.CharField(max_length=100, default='24/7')  # Operational timespan of the landfill
     Latitude = models.FloatField(default=0.0)  # Default latitude of the GPS coordinates
     Longitude = models.FloatField(default=0.0)  # Default longitude of the GPS coordinates
@@ -128,3 +131,18 @@ class Route(models.Model):
     EstimatedTime = models.DurationField()
     CreatedAt = models.DateTimeField(auto_now_add=True)
     UpdatedAt = models.DateTimeField(auto_now=True)
+
+
+class LandfillManager(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    landfill = models.ForeignKey(Landfill, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user.username} manages {self.landfill}"
+
+class STSManager(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    sts = models.ForeignKey(SecondaryTransferStation, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.user.username} manages {self.sts}"
