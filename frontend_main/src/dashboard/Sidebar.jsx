@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Sidebar = ({ onSelectOption }) => {
+const Sidebar = ({ onSelectOption, manager}) => {
 
   const navigate = useNavigate();
   const preStype = 1;
@@ -31,6 +31,7 @@ const Sidebar = ({ onSelectOption }) => {
     else if (option === "Admin") {
       setStyle_admin(postStype);
     } else {
+      navigate('/auth/create')
       setStyle_onno(postStype);
     }
   };
@@ -63,17 +64,19 @@ const Sidebar = ({ onSelectOption }) => {
               onClick={() => handleOptionClick("Admin")}
               className={style_admin === preStype ? 'w-full text-lg text-gray-800 hover:text-green-900 hover:font-bold hover:text-2xl hover:border-b-2' : 'w-full text-green-900 font-bold text-2xl border-b-2'}
             >
-              Admin Panel
+              <a href="http://127.0.0.1:8000/admin/">Admin Panel</a>
             </button>
           </li>
-          <li className="mb-4 w-full">
+          {
+            manager==='System Admin' && <li className="mb-4 w-full">
             <button
               onClick={() => handleOptionClick("Profile")}
               className={style_onno === preStype ? 'w-full text-lg text-gray-800 hover:text-green-900 hover:font-bold hover:text-2xl hover:border-b-2' : 'w-full text-green-900 font-bold text-2xl border-b-2'}
             >
-              Profile
+              Create User
             </button>
           </li>
+          }
         </ul>
       </div>
     </div>

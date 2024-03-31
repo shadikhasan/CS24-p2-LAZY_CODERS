@@ -8,6 +8,7 @@ admin.site.index_title = 'Navigation'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('ecosync.urls')),
+    path('', include('authentication.urls')),
     path('', include('user_management.urls')),
     path('', include('profile_management.urls')),
     path('', include('rbac.urls')),

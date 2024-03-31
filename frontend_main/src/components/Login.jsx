@@ -14,6 +14,23 @@ const Login = () => {
   const notify = () => toast.error("Error in email or password ");
   const notify_successfull_login = () => toast.success("Log in successfull!")
 
+  const adminLogin = async () => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/login/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+        }
+      );
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -29,9 +46,10 @@ const Login = () => {
       );
       const data = await response.json();
       if (!data.errors) {
+        adminLogin();
         notify_successfull_login();
         localStorage.setItem("token", data.token.access);
-        navigate("/profile");
+        navigate("/dashboard");
       } else {
         notify();
       }
@@ -79,17 +97,6 @@ const Login = () => {
                 className="font-semibold text-red-500 focus:outline-none hover:text-red-700 transition duration-300"
               >
                 Forgot Password
-              </button>
-            </p>
-          </div>
-          <div className="mt-3 text-center">
-            <p>
-              Need an account?{" "}
-              <button
-                onClick={() => navigate("/auth/create")}
-                className="font-semibold text-green-500 focus:outline-none hover:text-green-700 transition duration-300"
-              >
-                Create
               </button>
             </p>
           </div>

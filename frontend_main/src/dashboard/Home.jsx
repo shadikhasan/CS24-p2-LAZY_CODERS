@@ -39,6 +39,7 @@ const Home = () => {
   const [rolename, setRolename] = useState("");
   const [created_at, setCreated_at] = useState({});
   const [selectedOption, setSelectedOption] = useState('');
+  const [role_name, setRoleName] = useState('')
 
   const change_user_list = (newUsers) => {
     setIusers(newUsers);
@@ -75,6 +76,7 @@ const Home = () => {
       setRolename(() => data.role_name);
       setCreated_at(() => calculateTimeDifference(data.created_at));
       setUid(() => data.id);
+      setRoleName(() => data.role_name)
     } catch (error) {
       localStorage.removeItem("token");
       navigate("/auth/login");
@@ -137,7 +139,7 @@ const Home = () => {
         <NavbarDashboard username={username} onCCClick={handleClick}/>
       </div>
       <div className='h-full flex flex-row'>
-        <Sidebar onSelectOption={setSelectedOption}/>
+        <Sidebar onSelectOption={setSelectedOption} manager={role_name}/>
         {renderComponent()}
       </div>
     </div >

@@ -18,7 +18,7 @@ const Create = () => {
 
   const notMatched = () =>
     toast.error("Password and Confirm Password did not match!");
-  const alreadyExist = () => toast.error("Email or Username already exist");
+  const alreadyExist = () => toast.error("Are you the admin? Otherwise Email or Username already exist");
   const notify_successfull_login = () => toast.success("Log in successfull!");
 
   const handleSubmit = async (e) => {
@@ -44,8 +44,7 @@ const Create = () => {
       const data = await response.json();
       console.log(data);
       if (!data.errors) {
-        localStorage.setItem("token", data.token.access);
-        navigate("/profile");
+        navigate("/dashboard");
         notify_successfull_login();
       } else {
         alreadyExist();
