@@ -6,6 +6,7 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import ResetPassword from './components/ResetPassword';
 import Home from './dashboard/Home';
 import UseDetails from './dashboard/UserDetails';
+import ResetPasswordComponent from './components/ResetPasswordComponent';
 
 function App() {
     const [redirectToProfile, setRedirectToProfile] = useState(false);
@@ -19,6 +20,7 @@ function App() {
                 <Route path='/dashboard' index element={<Home/>}></Route>
                 <Route path='/users' index element={<Home/>}></Route>
                 <Route path="/users/:id" element={<UseDetails />} />
+                <Route path="/auth/reset-password/:id/:token" element={<ResetPasswordComponent/>} />
                 <Route path='/*' element={<Profile />} />
             </Routes>
         </BrowserRouter>

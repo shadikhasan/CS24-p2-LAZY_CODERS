@@ -80,7 +80,7 @@ const DashboardMain = () => {
   }, []);
 
   return (
-    <div className="flex flex-col bg-green-300 h-screen text-xl">
+    <div className="flex flex-col h-full w-full bg-green-300 text-xl">
       <div className="flex flex-row justify-between items-center ml-28  mt-8 text-xl">
         <div className="rounded-lg bg-white p-4 w-80 h-full">
           <p className="text-red-500">Total Trash Collected</p>
