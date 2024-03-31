@@ -5,150 +5,79 @@ import { FaUsers } from "react-icons/fa";
 import axios from "axios";
 
 const DashboardMain = () => {
-  const __totalTrashCollected = [
-    {
-      EntryID: 1,
-      VolumeOfWaste: "100.00",
-      TimeOfArrival: "2024-03-29T13:43:00Z",
-      TimeOfDeparture: "2024-03-29T13:43:02Z",
-      CreatedAt: "2024-03-29T13:43:07.831450Z",
-      UpdatedAt: "2024-03-29T13:43:07.831450Z",
-      Vehicle: 1,
-      Landfill: 1,
-    },
-    {
-      EntryID: 2,
-      VolumeOfWaste: "500.00",
-      TimeOfArrival: "2024-03-30T19:42:35Z",
-      TimeOfDeparture: "2024-03-30T19:42:37Z",
-      CreatedAt: "2024-03-30T19:42:38.170370Z",
-      UpdatedAt: "2024-03-30T19:42:38.170370Z",
-      Vehicle: 2,
-      Landfill: 1,
-    },
-  ];
-  const [totalTrashCollected, setTotalTrashCollected] = useState(0)
-  const totalWaste = __totalTrashCollected.reduce(
-    (sum, record) => sum + parseFloat(record.VolumeOfWaste),
-    0
-  );
-    // USESTATES
-  
-
-  const __last7DaysTotalTrashCollected = [
-    {
-      EntryID: 1,
-      VolumeOfWaste: "700.00",
-      TimeOfArrival: "2024-03-29T13:43:00Z",
-      TimeOfDeparture: "2024-03-29T13:43:02Z",
-      CreatedAt: "2024-03-29T13:43:07.831450Z",
-      UpdatedAt: "2024-03-29T13:43:07.831450Z",
-      Vehicle: 1,
-      Landfill: 1,
-    },
-    {
-      EntryID: 2,
-      VolumeOfWaste: "3500.00",
-      TimeOfArrival: "2024-03-30T19:42:35Z",
-      TimeOfDeparture: "2024-03-30T19:42:37Z",
-      CreatedAt: "2024-03-30T19:42:38.170370Z",
-      UpdatedAt: "2024-03-30T19:42:38.170370Z",
-      Vehicle: 2,
-      Landfill: 1,
-    },
-  ];
-  const totalWaste7Days = __last7DaysTotalTrashCollected.reduce(
-    (sum, record) => sum + parseFloat(record.VolumeOfWaste),
-    0
-  );
-  const [last7DaysTotalTrashCollected, setLast7DaysTotalTrashCollected] = useState(0)
-
-  const __total_vehicles = {
-    total_vehicles: 2,
-    vehicles_by_type: [
-      {
-        Type: "Open Truck",
-        count: 2,
-      },
-    ],
-    total_fuel_cost_loaded: 1300.0,
-    total_fuel_cost_unloaded: 900.0,
-    average_fuel_cost_loaded: 650.0,
-    average_fuel_cost_unloaded: 450.0,
-  };
+  const [totalTrashCollected, setTotalTrashCollected] = useState(0);
+  const [last7DaysTotalTrashCollected, setLast7DaysTotalTrashCollected] = useState(0);
   const [total_vehicles, setTotal_vehicles] = useState(0);
-
-  const total_waste_capacity = {
-    total_waste_capacity: 400.0,
-  };
-
-  const total_users = {
-    total_users: 15,
-    users_by_role: [
-      {
-        role__Name: "System Admin",
-        count: 1,
-      },
-      {
-        role__Name: "LandFiled Manager",
-        count: 5,
-      },
-      {
-        role__Name: "STS Manager",
-        count: 2,
-      },
-      {
-        role__Name: "System Admin",
-        count: 2,
-      },
-      {
-        role__Name: "Unassigned",
-        count: 3,
-      },
-    ],
-  };
-
-  const totalUsers = total_users.total_users;
-  const usersByRoleWithPercentage = total_users.users_by_role.map((user) => ({
-    ...user,
-    percentage: ((user.count / totalUsers) * 100).toFixed(2),
-  }));
-  
+  const [total_waste_capacity, setTotal_waste_capacity] = useState(0);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [usersByRoleWithPercentage, setUsersByRoleWithPercentage] = useState([]);
 
   useEffect(() => {
-    //
-    const f_totalTrashCollected = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/total-dumping-records/", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        if(response) {
-          setTotalTrashCollected(totalWaste(response.data));
-        }
+        const [totalDumpingRecords, last7DaysDumpingRecords, vehicleSummary, landfillWasteCapacity, userSummary] = await Promise.all([
+          axios.get("http://127.0.0.1:8000/total-dumping-records/", {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }),
+          axios.get("http://127.0.0.1:8000/last-7-days-dumping-records/", {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }),
+          axios.get("http://127.0.0.1:8000/vehicle-summary/", {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }),
+          axios.get("http://127.0.0.1:8000/landfill-waste-capacity/", {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }),
+          axios.get("http://127.0.0.1:8000/user-summary/", {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }),
+        ]);
+
+        const totalDumpingRecordsData = totalDumpingRecords.data;
+        const last7DaysDumpingRecordsData = last7DaysDumpingRecords.data;
+        const vehicleSummaryData = vehicleSummary.data;
+        const landfillWasteCapacityData = landfillWasteCapacity.data;
+        const userSummaryData = userSummary.data;
+
+        const totalTrashCollectedValue = totalDumpingRecordsData.reduce(
+          (sum, record) => sum + parseFloat(record.VolumeOfWaste),
+          0
+        );
+        setTotalTrashCollected(totalTrashCollectedValue);
+
+        const last7DaysTotalTrashCollectedValue = last7DaysDumpingRecordsData.reduce(
+          (sum, record) => sum + parseFloat(record.VolumeOfWaste),
+          0
+        );
+        setLast7DaysTotalTrashCollected(last7DaysTotalTrashCollectedValue);
+
+        setTotal_vehicles(vehicleSummaryData.total_vehicles);
+        setTotal_waste_capacity(landfillWasteCapacityData.total_waste_capacity);
+
+        const totalUsersValue = userSummaryData.total_users;
+        const usersByRoleWithPercentageValue = userSummaryData.users_by_role.map((user) => ({
+          ...user,
+          percentage: ((user.count / totalUsersValue) * 100).toFixed(2),
+        }));
+        setTotalUsers(totalUsersValue);
+        setUsersByRoleWithPercentage(usersByRoleWithPercentageValue);
       } catch (error) {
         console.log(error);
       }
-    }
-    f_totalTrashCollected();
-    // 
-    const f_last7DaysTotalTrashCollected = async () => {
-      try {
-        const response = await axios.get("http://127.0.0.1:8000/last-7-days-dumping-records/", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        if(response) {
-          setLast7DaysTotalTrashCollected(totalWaste7Days(response.data));
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    f_last7DaysTotalTrashCollected();
-  }, [])
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div className="flex flex-col bg-green-300 h-screen text-xl">
@@ -156,7 +85,7 @@ const DashboardMain = () => {
         <div className="rounded-lg bg-white p-4 w-80 h-full">
           <p className="text-red-500">Total Trash Collected</p>
           <div className="flex flex-row ">
-            <span className="text-xl font-bold">{totalWaste}</span>
+            <span className="text-xl font-bold">{totalTrashCollected}</span>
             <p className="pl-2">Tons</p>
             <div className="pl-32">
               <FaTrash className="text-red-500 m-2 text-xl" />
@@ -166,7 +95,7 @@ const DashboardMain = () => {
         <div className="rounded-lg bg-white p-4 w-80 h-full mr-28">
           <p className="text-red-500">Trash Collected In 7 Days</p>
           <div className="flex flex-row ">
-            <span className="text-xl font-bold">{totalWaste7Days}</span>
+            <span className="text-xl font-bold">{last7DaysTotalTrashCollected}</span>
             <p className="pl-2">Tons</p>
             <div className="pl-32">
               <FaTrash className="text-red-500 m-2 text-xl" />
@@ -181,7 +110,7 @@ const DashboardMain = () => {
               <p className="pr-8">Total Trucks</p> <FaTruck />
             </div>
             <div className="text-xl font-bold flex justify-center">
-              {total_vehicles.total_vehicles}
+              {total_vehicles}
             </div>
           </div>
 
@@ -190,7 +119,7 @@ const DashboardMain = () => {
               <p>Waste Capacity</p>
             </div>
             <div className="text-xl font-bold">
-              {total_waste_capacity.total_waste_capacity} Ton
+              {total_waste_capacity} Ton
             </div>
           </div>
         </div>
@@ -200,7 +129,7 @@ const DashboardMain = () => {
             <h1 className="pl-2">Total Users</h1>
           </div>
           <div className="text-xl font-bold ml-10 p-2">
-            {total_users.total_users}
+            {totalUsers}
           </div>
           <div className="flex flex-row text-xl">
             <div className="pl-12 ">
@@ -210,8 +139,8 @@ const DashboardMain = () => {
               <div className="bg-light_blue-200 p-1 mb-2">Unassigned</div>
             </div>
             <div className="flex flex-col text-xl  w-100">
-              {usersByRoleWithPercentage.map((user) => (
-                <div className="flex items-center mb-2" key={user.EntryID}>
+              {usersByRoleWithPercentage.map((user, index) => (
+                <div className="flex items-center mb-2" key={index}>
                   <div className="ml-1 pl-4">{`${user.role__Name} (${user.percentage}%)`}</div>
                 </div>
               ))}
@@ -222,4 +151,5 @@ const DashboardMain = () => {
     </div>
   );
 };
+
 export default DashboardMain;
