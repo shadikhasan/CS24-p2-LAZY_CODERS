@@ -7,7 +7,8 @@ class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=255, blank=True)
     last_name = models.CharField(max_length=255, blank=True)
     email = models.EmailField(unique=True)
-    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null = True, blank = True)  # Default role ID set to id 4 (id 4 = Unassigned)
+    role = models.ForeignKey(Role, on_delete=models.SET_NULL, null = True, blank = True)
+    created_at=models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.username

@@ -5,11 +5,17 @@ name = "pypi"
 
 [packages]
 django = "*"
-drf-nested-routers = "*"
 djangorestframework = "*"
+markdown = "*"
+django-filter = "*"
+djangorestframework-simplejwt = "*"
+django-cors-headers = "*"
+python-dotenv = "*"
+drf-nested-routers = "*"
 reportlab = "*"
+requests = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.9"
+python_version = "*"

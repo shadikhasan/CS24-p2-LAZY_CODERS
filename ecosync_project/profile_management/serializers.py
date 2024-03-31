@@ -5,7 +5,7 @@ class ProfileSerializer(ModelSerializer):
     role_name = SerializerMethodField(read_only=True)
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'role', 'role_name']
+        fields = ['id', 'username', 'first_name', 'last_name', 'email', 'role', 'role_name', 'created_at']
         read_only_fields = ['role']
         
     def get_role_name(self, instance):
