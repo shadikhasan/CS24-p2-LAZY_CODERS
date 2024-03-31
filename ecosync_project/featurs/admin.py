@@ -8,7 +8,6 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import Table, TableStyle
 from reportlab.lib import colors
 
-
 def download_pdf(self, request, queryset):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="billing_report.pdf"'
@@ -68,12 +67,13 @@ def download_pdf(self, request, queryset):
     canvas_width = 800
     canvas_height = 600
     table.wrapOn(pdf, canvas_width, canvas_height)
-    table.drawOn(pdf, 60, canvas_height - len(data) * 20)
+    table.drawOn(pdf, 45, canvas_height - len(data) * 20)
 
     pdf.save()
     return response
 
 download_pdf.short_description = 'Download selected item as PDF.'
+    
     
     
 
@@ -86,6 +86,7 @@ class VehicleAdmin(admin.ModelAdmin):
 @admin.register(SecondaryTransferStation)
 class SecondaryTransferStationAdmin(admin.ModelAdmin):
     autocomplete_fields = ['Manager']
+    ordering = ['STSID']
     list_display = ['STSID', 'WardNumber', 'Capacity', 'GPSLatitude', 'GPSLongitude', 'Manager', 'CreatedAt', 'UpdatedAt']
 @admin.register(Landfill)
 class LandfillAdmin(admin.ModelAdmin):
