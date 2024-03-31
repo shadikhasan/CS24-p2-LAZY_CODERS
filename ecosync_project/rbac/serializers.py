@@ -1,6 +1,6 @@
 # serializers.py
 from rest_framework import serializers
-from .models import Role, Permission
+from featurs.models import Role, Permission
 
 class PermissionSerializer(serializers.ModelSerializer):
     class Meta:

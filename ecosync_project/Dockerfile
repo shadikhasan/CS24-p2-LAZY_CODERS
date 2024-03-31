@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project files to the working directory
 COPY . .
 
-# Expose port 8000 to the outside world (if your Django app runs on port 8000)
+# Expose port 8000 to the outside world
 EXPOSE 8000
 
 # Command to run the Django development server
