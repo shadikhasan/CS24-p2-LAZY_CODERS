@@ -21,7 +21,8 @@ docker-compose build
 docker-compose up
 ```
 
-The API will then be available at [http://127.0.0.1:8080/](http://127.0.0.1:8080/).
+The Frontend will then be available at [http://127.0.0.1:8080/](http://127.0.0.1:8080/).
+The Backend will then be available at [http://127.0.0.1:8000/admin](http://127.0.0.1:8000/).
 
 ---
 
