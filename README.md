@@ -32,7 +32,7 @@ The Backend will then be available at [http://127.0.0.1:8000/admin](http://127.0
 ```
 docker-compose run --rm app sh -c "python manage.py superuser_init"
 ```
-###To run smtp4dev as a Windows service:
+### To run smtp4dev as a Windows service:
 
     ```bash
     docker run --rm -it -p 3000:80 -p 2525:25 rnwood/smtp4dev
