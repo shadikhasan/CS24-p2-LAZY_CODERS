@@ -108,45 +108,20 @@ const ResetPassword = () => {
         </div>
       ) : (
         <div className="flex justify-center items-center w-full h-full">
-          <div className=" bg-gray-200 rounded-lg shadow-lg w-3/4 sm:w-5/6 md:w-2/4 lg:w-1/3 px-8 py-6">
-            <h2 className="text-center text-green-800 text-2xl font-bold mb-4 uppercase">
-              Your Password
-            </h2>
-            <form
-              onSubmit={handleSubmitForChangePassword}
-              className="flex flex-col items-center"
+          <div className='flex flex-col w-1/2 justify-center items-center'>
+            <p>A fake email has been sent! </p>
+            <p>
+              The email can be found in{" "}
+              <span className='text-blue-600 hover:text-blue-800 hover:font-bold'>
+                <a href="http://localhost:3000/">http://localhost:3000/</a>
+              </span>
+            </p>
+            <button
+              className="bg-green-500 m-2 hover:bg-green-600 text-white font-semibold py-2 px-5 rounded-lg"
+              onClick={() => navigate('/reset-password')}
             >
-              <input
-                type="text"
-                placeholder="/eid/token-hijibiji/"
-                value={tokenEndpint}
-                onChange={(e) => setTokenEndpoint(e.target.value)}
-                className="w-full h-12 bg-white border border-gray-300 rounded-md px-4 mb-4 focus:outline-none focus:border-green-500"
-                required
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full h-12 bg-white border border-gray-300 rounded-md px-4 mb-4 focus:outline-none focus:border-green-500"
-                required
-              />
-              <input
-                type="password"
-                placeholder="Confirm Password"
-                value={password2}
-                onChange={(e) => setPassword2(e.target.value)}
-                className="w-full h-12 bg-white border border-gray-300 rounded-md px-4 mb-4 focus:outline-none focus:border-green-500"
-                required
-              />
-              <button
-                type="submit"
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md focus:outline-none focus:bg-green-600 transition duration-300"
-              >
-                Reset Password
-              </button>
-            </form>
+              Back
+            </button>
           </div>
         </div>
       )}

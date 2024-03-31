@@ -7,11 +7,6 @@ import UserList from './UserList';
 import DashboardMain from './DashboardMain';
 
 const Home = () => {
-
-  //
-  const uusseerr = [
-  ]
-  //
   function calculateTimeDifference(created_at) {
     const createdAtDate = new Date(created_at);
     const currentDate = new Date();
@@ -30,7 +25,7 @@ const Home = () => {
 
   const navigate = useNavigate()
   const location = useLocation()
-  const [_users, setIusers] = useState(uusseerr);
+  const [_users, setIusers] = useState([]);
   const [username, setUsername] = useState("");
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
@@ -60,7 +55,6 @@ const Home = () => {
   };
 
   async function populateProfile() {
-    console.log('+');
     try {
       const response = await axios.get("http://127.0.0.1:8000/profile", {
         headers: {
@@ -92,7 +86,6 @@ const Home = () => {
         },
       });
       const data = response.data;
-      console.log(data);
       setIusers(() => data);
     } catch (error) {
       console.log(error.message);
