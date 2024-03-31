@@ -14,17 +14,17 @@ class Vehicle(models.Model):
         (3, '3 ton'),
         (5, '5 ton'),
         (7, '7 ton'),
+        (15, '15 ton'),  # Adding 15 ton capacity choice
     ]
     
     VehicleID = models.AutoField(primary_key=True)
     RegistrationNumber = models.CharField(max_length=100)
     Type = models.CharField(max_length=255, choices=VEHICLE_TYPES)
-    Capacity = models.DecimalField(max_digits=5, decimal_places=2, choices=CAPACITY_CHOICES)
+    Capacity = models.IntegerField(choices=CAPACITY_CHOICES)  # Changed to IntegerField
     FuelCostLoaded = models.DecimalField(max_digits=10, decimal_places=2)
     FuelCostUnloaded = models.DecimalField(max_digits=10, decimal_places=2)
     CreatedAt = models.DateTimeField(auto_now_add=True)
     UpdatedAt = models.DateTimeField(auto_now=True)
-
     def __str__(self) -> str:
         return self.RegistrationNumber
     
@@ -60,6 +60,7 @@ class WasteTransfer(models.Model):
     Vehicle = models.ForeignKey('Vehicle', on_delete=models.CASCADE)
     Source = models.ForeignKey('SecondaryTransferStation', related_name='source_transfer', on_delete=models.CASCADE)
     Destination = models.ForeignKey('Landfill', related_name='destination_transfer', on_delete=models.CASCADE)
+    Distance = models.DecimalField(max_digits=10, decimal_places=2)
     VolumeOfWaste = models.DecimalField(max_digits=10, decimal_places=2)
     TimeOfArrival = models.DateTimeField()
     TimeOfDeparture = models.DateTimeField()
@@ -122,15 +123,6 @@ class Role(models.Model):
 
     def __str__(self) -> str:
         return self.Name
-    
-class Route(models.Model):
-    RouteID = models.AutoField(primary_key=True)
-    Source = models.ForeignKey('SecondaryTransferStation', related_name='source_route', on_delete=models.CASCADE)
-    Destination = models.ForeignKey('Landfill', related_name='destination_route', on_delete=models.CASCADE)
-    Distance = models.DecimalField(max_digits=10, decimal_places=2)
-    EstimatedTime = models.DurationField()
-    CreatedAt = models.DateTimeField(auto_now_add=True)
-    UpdatedAt = models.DateTimeField(auto_now=True)
 
 
 class LandfillManager(models.Model):

@@ -8,6 +8,10 @@ from rest_framework.views import APIView
 from featurs.models import *
 from ecosync.models import *
 from django.db import models
+from rest_framework import status
+import requests
+import json
+from ecosync.utils import aws_map_route_api
 
 class Last7DaysDumpingRecords(generics.ListAPIView):
     serializer_class = DumpingEntryRecordSerializer
@@ -87,3 +91,44 @@ class LandfillWasteCapacity(APIView):
         }
 
         return Response(summary_data)
+    
+    
+class RouteAPIView(APIView):
+    def post(self, request):
+        data = request.data
+        source_lat = data.get('source_lat')
+        source_lon = data.get('source_lon')
+        dest_lat = data.get('dest_lat')
+        dest_lon = data.get('dest_lon')
+        optimize_for = data.get('optimize_for')
+        
+        if None in [source_lat, source_lon, dest_lat, dest_lon, optimize_for]:
+            return Response({"error": "Missing required parameters"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        result = aws_map_route_api(source_lat, source_lon, dest_lat, dest_lon, optimize_for)
+        return Response(result)
+
+    def get(self, request):
+        return Response({"error": "Only POST requests are allowed"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
+def route_form_view(request):
+    if request.method == 'POST':
+        data = request.POST
+        source_lat = data.get('source_lat')
+        source_lon = data.get('source_lon')
+        dest_lat = data.get('dest_lat')
+        dest_lon = data.get('dest_lon')
+        optimize_for = data.get('optimize_for')
+
+        if None in [source_lat, source_lon, dest_lat, dest_lon, optimize_for]:
+            return JsonResponse({"error": "Missing required parameters"}, status=400)
+
+        result = aws_map_route_api(source_lat, source_lon, dest_lat, dest_lon, optimize_for)
+        return JsonResponse(result)
+    else:
+        return render(request, 'route_form.html')

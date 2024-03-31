@@ -8,4 +8,6 @@ urlpatterns = [
     path('vehicle-summary/', VehicleSummary.as_view(), name='vehicle_summary'),
     path('user-summary/', UserSummary.as_view(), name='user_summary'),
     path('landfill-waste-capacity/', LandfillWasteCapacity.as_view(), name='landfill_waste_capacity'),
+    path('route/', RouteAPIView.as_view(), name='route'),
+    # path('route/', route_form_view, name='route'),
 ]

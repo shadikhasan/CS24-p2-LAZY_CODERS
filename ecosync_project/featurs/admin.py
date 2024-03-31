@@ -95,7 +95,7 @@ class LandfillAdmin(admin.ModelAdmin):
 @admin.register(WasteTransfer)
 class WasteTransferAdmin(admin.ModelAdmin):
     list_display = ['TransferID', 'Vehicle', 'Source', 'Destination', 'VolumeOfWaste', 'TimeOfArrival', 'TimeOfDeparture', 'CreatedAt', 'UpdatedAt']
-
+    
 @admin.register(OilAllocation)
 class OilAllocationAdmin(admin.ModelAdmin):
     list_display = ['AllocationID', 'Vehicle', 'WeekNumber', 'VolumeOfWaste', 'OilAllocated', 'CreatedAt', 'UpdatedAt']
@@ -147,9 +147,6 @@ class RolePermissionAdmin(admin.ModelAdmin):
 class RoleAdmin(admin.ModelAdmin):
     list_display = ['RoleID', 'Name', 'Description', 'CreatedAt', 'UpdatedAt']
 
-@admin.register(Route)
-class RouteAdmin(admin.ModelAdmin):
-    list_display = ['RouteID', 'Source', 'Destination', 'Distance', 'EstimatedTime', 'CreatedAt', 'UpdatedAt']
 
 @admin.register(LandfillManager)
 class LandfillManagerAdmin(admin.ModelAdmin):

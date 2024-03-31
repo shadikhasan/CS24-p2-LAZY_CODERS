@@ -12,4 +12,5 @@ urlpatterns = [
     path('', include('profile_management.urls')),
     path('', include('rbac.urls')),
     path('', include('custom_api.urls')),
+    path('', include('featurs.urls')),
 ]
