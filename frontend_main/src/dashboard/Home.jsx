@@ -43,8 +43,8 @@ const Home = () => {
 
   const change_user_list = (newUsers) => {
     setIusers(newUsers);
-    navigate('/dashboard');
-    setSelectedOption('Dashboard');
+    setSelectedOption('UserList')
+    navigate('/users');
   } 
 
   const decodeToken = (token) => {
@@ -127,7 +127,7 @@ const Home = () => {
       case '/dashboard':
         return <DashboardMain />;
       case '/users':
-        return <UserList users={_users} profileId={uid}/>;
+        return <UserList users={_users} profileId={uid} onChangeUsers={change_user_list}/>;
       default:
         return <DashboardMain />;
     }

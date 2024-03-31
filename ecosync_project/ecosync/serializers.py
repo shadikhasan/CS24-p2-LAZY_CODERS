@@ -1,6 +1,7 @@
 from django.utils.encoding import smart_str, force_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.contrib.auth.hashers import check_password
 from rest_framework import serializers
 from .models import CustomUser as User
 from django.core.mail import send_mail
@@ -67,6 +68,36 @@ class UserChangePasswordSerializer(serializers.ModelSerializer):
         raise serializers.ValidationError("Password and Confirm Password Did Not Match!")
     
 
+class UserChangePasswordSerializerNew(serializers.ModelSerializer):
+    old_password = serializers.CharField(
+        max_length=255,
+        style={'input_type': 'password'},
+        write_only=True
+    )
+    new_password = serializers.CharField(
+        max_length=255,
+        style={'input_type': 'password'},
+        write_only=True
+    )
+
+    class Meta:
+        model = User
+        fields = ['old_password', 'new_password']
+
+    def validate(self, data):
+        old_password = data.get('old_password')
+        new_password = data.get('new_password')
+        user = self.context.get('user')
+
+        if not check_password(old_password, user.password):
+            raise serializers.ValidationError("Old password is incorrect.")
+        if old_password == new_password:
+            raise serializers.ValidationError("New password must be different from old password.")
+        user.set_password(new_password)
+        user.save()
+        return data
+    
+
 
 
 class SendPasswordResetEmailSerializer(serializers.ModelSerializer):
@@ -84,7 +115,7 @@ class SendPasswordResetEmailSerializer(serializers.ModelSerializer):
             user = User.objects.get(email=email)
             uid = urlsafe_base64_encode(force_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
-            link = ''+'/api/send-reset-password-email/'+uid+'/'+token
+            link = 'http://http://127.0.0.1:8000'+'/auth/send-reset-password-email/'+uid+'/'+token+'/'
             print(link)
             # S E N D   E M A I L 
             body = 'Hello, '+user.first_name+' '+user.last_name+' 😁\n\n'+'Click the following link to reset your password: \n'+link+'\n\nToken Endpoint: \n/'+uid+'/'+token+'/\n\nNote: This link will be valid for 15 mins till the email has been sent!'

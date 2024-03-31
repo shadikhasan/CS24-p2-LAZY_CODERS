@@ -8,17 +8,13 @@ const ChangePassword = ({ changeState }) => {
   const navigate = useNavigate();
 
   const notMatched = () =>
-    toast.error("Password and Confirm Password did not match!");
+    toast.error("Old papssword is wrong or you have set the password exactly same as before");
 
-  const [password, setPassword] = useState("");
-  const [password2, setPassword2] = useState("");
+  const [old_password, setPassword] = useState("");
+  const [new_password, setPassword2] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (password != password2 || !password) {
-      notMatched();
-      return;
-    }
     try {
       const response = await fetch(
         `http://127.0.0.1:8000/auth/change-password/`,
@@ -28,21 +24,19 @@ const ChangePassword = ({ changeState }) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify({ password, password2 }),
+          body: JSON.stringify({ old_password, new_password }),
         }
       );
       const data = await response.json();
       if (!data.errors) {
         changeState();
-        navigate("/profile");
-        __password_change_success();
+        toast.success("Password hab been changed successfully!")
       } else {
         notMatched();
       }
     } catch (error) {
       console.log(error.message);
     }
-    changeState();
   };
 
   return (
@@ -54,16 +48,16 @@ const ChangePassword = ({ changeState }) => {
         <form onSubmit={handleSubmit} className="flex flex-col items-center">
           <input
             type="password"
-            placeholder="password"
-            value={password}
+            placeholder="Old Password"
+            value={old_password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full h-12 bg-white border border-gray-300 rounded-md px-4 mb-4 focus:outline-none focus:border-green-500"
             required
           />
           <input
             type="password"
-            placeholder="Confirm Password"
-            value={password2}
+            placeholder="New Password"
+            value={new_password}
             onChange={(e) => setPassword2(e.target.value)}
             className="w-full h-12 bg-white border border-gray-300 rounded-md px-4 mb-4 focus:outline-none focus:border-green-500"
             required
