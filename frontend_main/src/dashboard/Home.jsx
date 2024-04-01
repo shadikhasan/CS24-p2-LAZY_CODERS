@@ -120,14 +120,14 @@ const Home = () => {
       case '/dashboard':
         return <DashboardMain />;
       case '/users':
-        return <UserList users={_users} profileId={uid} onChangeUsers={change_user_list}/>;
+        return <UserList users={_users} profileId={uid} onChangeUsers={change_user_list} roleName={role_name} />;
       default:
         return <DashboardMain />;
     }
   };
 
   return (
-    <div className='h-screen w-screen'>
+    <div className='h-auto w-screen'>
       <div>
         <NavbarDashboard username={username} onCCClick={handleClick}/>
       </div>

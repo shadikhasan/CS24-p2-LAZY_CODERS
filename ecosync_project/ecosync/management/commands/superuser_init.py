@@ -1,10 +1,16 @@
+# In your_app/management/commands/create_superuser.py
+
 from django.core.management.base import BaseCommand
 from ecosync.models import CustomUser
 
 class Command(BaseCommand):
-    help = 'Creates a superuser'
+    help = 'Creates a superuser if not already exists'
 
     def handle(self, *args, **kwargs):
+        if CustomUser.objects.exists():
+            self.stdout.write(self.style.SUCCESS("Superuser not created because users already exist."))
+            return
+
         username = 'admin2'
         email = 'admin2@gmail.com'
         password = 'admin2'

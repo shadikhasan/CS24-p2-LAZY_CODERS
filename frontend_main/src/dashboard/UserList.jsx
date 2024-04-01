@@ -14,14 +14,14 @@ const UserList = ({ users, profileId, onChangeUsers }) => {
 
   return (
     <div className="h-full w-full">
-      <div className="flex flex-row justify-center items-center pt-2">
-        <FaSearch className="text-3xl text-blue-400 hover:text-blue-700" />
+      <div className="flex flex-row justify-center items-center pt-3 mb-0 pb-0">
+        <FaSearch className="text-2xl text-blue-400 hover:text-blue-700" />
         <input
           type="text"
           placeholder="Search by username..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="mx-4 p-6 border  w-1/3 focus:border-green-400 rounded"
+          className="mx-4 p-6 border  w-1/3 focus:border-green-400 rounded shadow-md"
         />
         <button onClick={() => navigate("/auth/create")}>
           <TiUserAdd className="text-3xl text-blue-400 hover:text-blue-700" />

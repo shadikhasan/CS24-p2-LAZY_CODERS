@@ -46,7 +46,7 @@ const UserCard = ({ user , onChangeUsers, users }) => {
 
   return (
     <>
-      <div className="p-4 rounded shadow m-7 flex bg-green-100">
+      <div className="px-4 pb-6 pt-0 rounded shadow m-7 flex bg-green-100">
         <div className="flex-none w-24 h-full p-2">
           <p className="text-gray-600 w-full h-6 pb-1 pl-1">
             <span className="uppercase font-semibold">ID</span>

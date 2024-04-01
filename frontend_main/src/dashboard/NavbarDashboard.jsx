@@ -14,8 +14,8 @@ const NavbarDashboard = ({username, onCCClick}) => {
             </button>
           </div>
           <div className="flex flex-row justify-between items-center pr-8">
-            <p className="text-white text-lg font-bold pl-3 font-mono pr-2">
-              {username}
+            <p className="text-white text-lg font-bold pl-3 font-mono pr-3">
+              Welcome, {username}
             </p>
             <button
               onClick={onCCClick}

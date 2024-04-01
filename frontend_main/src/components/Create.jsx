@@ -119,17 +119,6 @@ const Create = () => {
               Create
             </button>
           </form>
-          <div className="mt-4 text-center">
-            <p>
-              Have An Account?{" "}
-              <button
-                onClick={() => navigate("/auth/login")}
-                className="font-semibold text-green-500 focus:outline-none hover:text-green-700 transition duration-300"
-              >
-                Log In
-              </button>
-            </p>
-          </div>
         </div>
       </div>
       <ToastContainer />
