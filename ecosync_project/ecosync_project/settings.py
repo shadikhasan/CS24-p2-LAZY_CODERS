@@ -201,17 +201,26 @@ CORS_ALLOW_HEADERS = (
 
 PASSWORD_RESET_TIMEOUT=900
 
-# E M A I L  C O N F I G U R A T I O N
+# # E M A I L  C O N F I G U R A T I O N
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-#EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST = 'localhost'
-#EMAIL_PORT = 587
-EMAIL_PORT = 2525
-#EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'admin@gmail.com' 
-#EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD') 
-#print(os.environ.get('EMAIL_PASSWORD') )
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# #EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST = 'localhost'
+# #EMAIL_PORT = 587
+# EMAIL_PORT = 2525
+# #EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'admin@gmail.com' 
+# #EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD') 
+# #print(os.environ.get('EMAIL_PASSWORD') )
+
+
+# Email Configuration
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'shadik.sk420@gmail.com'
+EMAIL_HOST_PASSWORD = 'yktqaaumcxxbqkra'
+EMAIL_USE_TLS = True
 
 
 

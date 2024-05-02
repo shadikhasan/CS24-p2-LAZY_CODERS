@@ -35,7 +35,7 @@ services:
   react_app:
     build: ./frontend_main
     ports:
-      - "8080:8080"
+      - "5173:5173"
     
 
 volumes:
