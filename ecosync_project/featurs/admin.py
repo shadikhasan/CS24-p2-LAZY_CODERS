@@ -85,17 +85,16 @@ class VehicleAdmin(admin.ModelAdmin):
 
 @admin.register(SecondaryTransferStation)
 class SecondaryTransferStationAdmin(admin.ModelAdmin):
-    autocomplete_fields = ['Manager']
     ordering = ['STSID']
-    list_display = ['STSID', 'WardNumber', 'Capacity', 'GPSLatitude', 'GPSLongitude', 'Manager', 'CreatedAt', 'UpdatedAt']
+    list_display = ['STSID', 'WardNumber', 'Capacity', 'Latitude', 'Longitude', 'CreatedAt', 'UpdatedAt']
 @admin.register(Landfill)
 class LandfillAdmin(admin.ModelAdmin):
-    autocomplete_fields = ['Manager',]
-    list_display = ['LandfillID', 'Name', 'Location', 'Manager', 'Capacity', 'CreatedAt', 'UpdatedAt']
+    list_display = ['LandfillID', 'Name', 'Location', 'Capacity', 'Latitude', 'Longitude',  'CreatedAt', 'UpdatedAt']
 
 @admin.register(WasteTransfer)
 class WasteTransferAdmin(admin.ModelAdmin):
-    list_display = ['TransferID', 'Vehicle', 'Source', 'Destination', 'VolumeOfWaste', 'TimeOfArrival', 'TimeOfDeparture', 'CreatedAt', 'UpdatedAt']
+    ordering = ['TransferID']
+    list_display = ['TransferID', 'Vehicle', 'Source', 'Destination', 'Distance', 'VolumeOfWaste', 'TimeOfArrival', 'TimeOfDeparture', 'CreatedAt', 'UpdatedAt']
     
 @admin.register(OilAllocation)
 class OilAllocationAdmin(admin.ModelAdmin):
@@ -146,26 +145,38 @@ class RolePermissionAdmin(admin.ModelAdmin):
 
 @admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
+    ordering = ['RoleID']
     list_display = ['RoleID', 'Name', 'Description', 'CreatedAt', 'UpdatedAt']
 
 
 @admin.register(LandfillManager)
 class LandfillManagerAdmin(admin.ModelAdmin):
-    list_display = ['manager_name', 'landfill']
+    list_display = ['manager_name']
 
     def manager_name(self, obj):
         return obj.user.username  # Assuming 'username' is the field you want to display
 
-    manager_name.short_description = 'Manager Name'  # Customizing the column header
+    def delete_queryset(self, request, queryset):
+            # Update the role for all users associated with the queryset
+            for manager in queryset:
+                manager.user.role_id = 4
+                manager.user.save()
+            # Delete the queryset
+            super().delete_queryset(request, queryset)
+
+
 @admin.register(STSManager)
 class STSManagerAdmin(admin.ModelAdmin):
-    list_display = ['manager_name', 'sts_ward']
+    list_display = ['manager_name']
 
     def manager_name(self, obj):
         return obj.user.username  # Assuming 'username' is the field you want to display
-
-    def sts_ward(self, obj):
-        return obj.sts.WardNumber  # Assuming 'WardNumber' is the field you want to display
-
-    manager_name.short_description = 'Manager Name'  # Customizing the column header
-    sts_ward.short_description = 'STS Ward Number'  # Customizing the column header
+    
+    
+    def delete_queryset(self, request, queryset):
+        # Update the role for all users associated with the queryset
+        for manager in queryset:
+            manager.user.role_id = 4
+            manager.user.save()
+        # Delete the queryset
+        super().delete_queryset(request, queryset)

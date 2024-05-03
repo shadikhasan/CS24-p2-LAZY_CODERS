@@ -10,22 +10,24 @@ from .serializers import *
 from profile_management.serializers import *
 
 class CustomUserViewSet(viewsets.ModelViewSet):
-    http_method_names = ['get', 'put', 'post', 'delete']
+    http_method_names = ['get', 'put', 'post', 'delete', 'patch']  # Include 'patch' in the allowed methods
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [IsSystemAdmin]
 
-    # @action(detail=False, permission_classes=[IsSystemAdmin])
     def update(self, request, *args, **kwargs):
-        if not request.user.role.Name == "System Admin":  # Check if the user is a system admin
+        if not request.user.role.Name == "System Admin":
             return Response({"detail": "You don't have permission to perform this action."},
                             status=status.HTTP_403_FORBIDDEN)
 
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
+        serializer = self.get_serializer(instance, data=request.data, partial=True)  # Use partial=True for PATCH
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
+
+    def partial_update(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)  # For PATCH, just call the update method
     
 class AuthCreateViewSet(viewsets.ModelViewSet):
     http_method_names = ['post']
