@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from featurs.models import Role, STSManager, LandfillManager
+from featurs.models import Role
 from django.contrib.auth.models import Group
 
 class CustomUser(AbstractUser):
@@ -23,21 +23,8 @@ class CustomUser(AbstractUser):
         super().save(*args, **kwargs)
         if not is_new and self.role_id != original_role_id:
             print("Role changed. Assigning permission group...")
-            self.sync_managers_with_role()
             self.assign_permission_group()
 
-    def sync_managers_with_role(self):
-        for manager_model in [LandfillManager, STSManager]:
-            manager_instance = manager_model.objects.filter(user=self).first()
-            if manager_instance:
-                manager_instance.delete()
-
-        # Create manager instance based on the user's role if it doesn't already exist
-        if self.role_id == 3 and not LandfillManager.objects.filter(user__username=self.username).exists():
-            LandfillManager.objects.create(user=self)
-        elif self.role_id == 2 and not STSManager.objects.filter(user__username=self.username).exists():
-            STSManager.objects.create(user=self)
-                
     def assign_permission_group(self):
         print("Assigning permission group...")
         if self.role_id == 3:

@@ -5,57 +5,6 @@ from django.dispatch import receiver
 from geopy.distance import geodesic
 from django.db.models.signals import pre_save, post_delete
 
-class LandfillManager(models.Model):
-    user = models.ForeignKey('ecosync.CustomUser', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.user.username
-
-    def save(self, *args, **kwargs):
-        if not self.pk:  # Check if it's a new instance
-            # Check if the user is already an STS manager
-            sts_manager_exists = STSManager.objects.filter(user=self.user).exists()
-            if sts_manager_exists:
-                raise ValueError("User is already an STS manager and cannot be a Landfill manager. Delete it first to override.")
-
-            # Update the user's role only if it's a new instance
-            if self.user.role_id == 4:  # Check if the user's role is the default value (4)
-                self.user.role_id = 3  # Update the user's role to the desired value (3)
-                self.user.save()  # Save the user object with the updated role
-
-            super().save(*args, **kwargs)  # Call save only if it's a new instance
-
-    def delete(self, *args, **kwargs):
-        if self.user.role_id == 3:  # Check if the user's role is the Landfill manager role
-            self.user.role_id = 4  # Revert user's role to the default value (4)
-            self.user.save()  # Save the user object with the updated role
-
-        super().delete(*args, **kwargs)
-
-class STSManager(models.Model):
-    user = models.ForeignKey('ecosync.CustomUser', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return self.user.username
-
-    def save(self, *args, **kwargs):
-        if not self.pk:  # Check if it's a new instance
-            # Check if the user is already a Landfill manager
-            landfill_manager_exists = LandfillManager.objects.filter(user=self.user).exists()
-            if landfill_manager_exists:
-                raise ValueError("User is already a Landfill manager and cannot be an STS manager. Delete it first to override.")
-            if self.user.role_id == 4:  # Check if the user's role is the default value (4)
-                self.user.role_id = 2  # Update the user's role to the desired value (2)
-                self.user.save()  # Save the user object with the updated role
-
-            super().save(*args, **kwargs)  # Call save only if it's a new instance
-
-    def delete(self, *args, **kwargs):
-        if self.user.role_id == 2:  # Check if the user's role is the STS manager role
-            self.user.role_id = 4  # Revert user's role to the default value (4)
-            self.user.save()  # Save the user object with the updated role
-
-        super().delete(*args, **kwargs)
 
 
 class SecondaryTransferStation(models.Model):
@@ -63,7 +12,7 @@ class SecondaryTransferStation(models.Model):
     STSID = models.AutoField(primary_key=True)
     WardNumber = models.CharField(max_length=20)
     Location = models.CharField(max_length=255)
-    Manager = models.ForeignKey(STSManager, on_delete=models.CASCADE, blank=True, null=True)
+    Manager = models.ForeignKey('ecosync.CustomUser', on_delete=models.CASCADE, blank=True, null=True)
     Capacity = models.DecimalField(max_digits=10, decimal_places=2)
     Latitude = models.FloatField(default=0.0)  # Default latitude of the GPS coordinates
     Longitude = models.FloatField(default=0.0) 
@@ -77,7 +26,7 @@ class Landfill(models.Model):
     LandfillID = models.AutoField(primary_key=True)
     Name = models.CharField(max_length=100)
     Location = models.CharField(max_length=255)
-    Manager = models.ForeignKey(LandfillManager, on_delete=models.CASCADE, blank=True, null=True)
+    Manager = models.ForeignKey('ecosync.CustomUser', on_delete=models.CASCADE, blank=True, null=True)
     Capacity = models.DecimalField(max_digits=10, decimal_places=2)  # Default capacity of the landfill
     OperationalTimespan = models.CharField(max_length=100, default='24/7')  # Operational timespan of the landfill
     Latitude = models.FloatField(default=0.0)  # Default latitude of the GPS coordinates
