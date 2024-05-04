@@ -1,63 +1,61 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from geopy.distance import geodesic
+from django.db.models.signals import pre_save, post_delete
 
-
-    
 class LandfillManager(models.Model):
-    user = models.ForeignKey('ecosync.CustomUser', on_delete=models.CASCADE)    
-    
-    def __str__(self) -> str:
+    user = models.ForeignKey('ecosync.CustomUser', on_delete=models.CASCADE)
+
+    def __str__(self):
         return self.user.username
+
     def save(self, *args, **kwargs):
-            if not self.pk:  # Check if it's a new instance
-                # Check if the user is already an STS manager
-                sts_manager_exists = STSManager.objects.filter(user=self.user).exists()
-                if sts_manager_exists:
-                    raise ValueError("User is already an STS manager and cannot be a Landfill manager. Delete it first to override.")
+        if not self.pk:  # Check if it's a new instance
+            # Check if the user is already an STS manager
+            sts_manager_exists = STSManager.objects.filter(user=self.user).exists()
+            if sts_manager_exists:
+                raise ValueError("User is already an STS manager and cannot be a Landfill manager. Delete it first to override.")
 
-                # Update the user's role only if it's a new instance
-                if self.user.role_id == 4:  # Check if the user's role is the default value (4)
-                    self.user.role_id = 3  # Update the user's role to the desired value (3)
-                    self.user.save()  # Save the user object with the updated role
+            # Update the user's role only if it's a new instance
+            if self.user.role_id == 4:  # Check if the user's role is the default value (4)
+                self.user.role_id = 3  # Update the user's role to the desired value (3)
+                self.user.save()  # Save the user object with the updated role
 
-            return super().save(*args, **kwargs)
-        
+            super().save(*args, **kwargs)  # Call save only if it's a new instance
+
     def delete(self, *args, **kwargs):
         if self.user.role_id == 3:  # Check if the user's role is the Landfill manager role
             self.user.role_id = 4  # Revert user's role to the default value (4)
             self.user.save()  # Save the user object with the updated role
 
-        # Ensure to return the result of super().delete() after updating the user's role
-        return super().delete(*args, **kwargs)
-    
-    
+        super().delete(*args, **kwargs)
 
 class STSManager(models.Model):
     user = models.ForeignKey('ecosync.CustomUser', on_delete=models.CASCADE)
-    
-    def __str__(self) -> str:
+
+    def __str__(self):
         return self.user.username
+
     def save(self, *args, **kwargs):
         if not self.pk:  # Check if it's a new instance
             # Check if the user is already a Landfill manager
-            landfill_manager = LandfillManager.objects.filter(user=self.user).exists()
-            if landfill_manager:
-                raise ValueError("User is already a Landfill manager and cannot be an STS manager.")
+            landfill_manager_exists = LandfillManager.objects.filter(user=self.user).exists()
+            if landfill_manager_exists:
+                raise ValueError("User is already a Landfill manager and cannot be an STS manager. Delete it first to override.")
             if self.user.role_id == 4:  # Check if the user's role is the default value (4)
                 self.user.role_id = 2  # Update the user's role to the desired value (2)
                 self.user.save()  # Save the user object with the updated role
-        super().save(*args, **kwargs)
+
+            super().save(*args, **kwargs)  # Call save only if it's a new instance
 
     def delete(self, *args, **kwargs):
         if self.user.role_id == 2:  # Check if the user's role is the STS manager role
             self.user.role_id = 4  # Revert user's role to the default value (4)
             self.user.save()  # Save the user object with the updated role
-        super().delete(*args, **kwargs)
 
+        super().delete(*args, **kwargs)
 
 
 class SecondaryTransferStation(models.Model):
@@ -169,20 +167,6 @@ class DumpingEntryRecord(models.Model):
     VolumeOfWaste = models.DecimalField(max_digits=10, decimal_places=2)
     TimeOfArrival = models.DateTimeField()
     TimeOfDeparture = models.DateTimeField()
-    CreatedAt = models.DateTimeField(auto_now_add=True)
-    UpdatedAt = models.DateTimeField(auto_now=True)
-
-class Permission(models.Model):
-    PermissionID = models.AutoField(primary_key=True)
-    Name = models.CharField(max_length=100)
-    Description = models.TextField()
-    CreatedAt = models.DateTimeField(auto_now_add=True)
-    UpdatedAt = models.DateTimeField(auto_now=True)
-
-class RolePermission(models.Model):
-    RolePermissionID = models.AutoField(primary_key=True)
-    Role = models.ForeignKey('Role', on_delete=models.CASCADE)
-    Permission = models.ForeignKey('Permission', on_delete=models.CASCADE)
     CreatedAt = models.DateTimeField(auto_now_add=True)
     UpdatedAt = models.DateTimeField(auto_now=True)
 

@@ -64,4 +64,4 @@ class UserRolesListViewSet(viewsets.ModelViewSet):
     http_method_names = ['get']
     queryset = Role.objects.all()
     serializer_class = UserRoleListSerializer
-    permission_classes = [IsSystemAdmin]
+    #permission_classes = [IsSystemAdmin]

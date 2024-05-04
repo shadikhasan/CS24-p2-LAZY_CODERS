@@ -32,9 +32,10 @@ class CustomUser(AbstractUser):
             if manager_instance:
                 manager_instance.delete()
 
-        if self.role_id == 3:
+        # Create manager instance based on the user's role if it doesn't already exist
+        if self.role_id == 3 and not LandfillManager.objects.filter(user__username=self.username).exists():
             LandfillManager.objects.create(user=self)
-        elif self.role_id == 2:
+        elif self.role_id == 2 and not STSManager.objects.filter(user__username=self.username).exists():
             STSManager.objects.create(user=self)
                 
     def assign_permission_group(self):

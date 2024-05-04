@@ -81,18 +81,25 @@ download_pdf.short_description = 'Download selected item as PDF.'
 @admin.register(Vehicle)
 class VehicleAdmin(admin.ModelAdmin):
     search_fields = ['RegistrationNumber']
+    ordering = ['VehicleID']
     list_display = ['VehicleID', 'RegistrationNumber', 'Type', 'Capacity', 'FuelCostLoaded', 'FuelCostUnloaded', 'CreatedAt', 'UpdatedAt']
 
 @admin.register(SecondaryTransferStation)
 class SecondaryTransferStationAdmin(admin.ModelAdmin):
+    search_fields = ['STSID']
+    autocomplete_fields = ['Manager']
     ordering = ['STSID']
     list_display = ['STSID', 'WardNumber', 'Capacity', 'Latitude', 'Longitude', 'CreatedAt', 'UpdatedAt']
 @admin.register(Landfill)
 class LandfillAdmin(admin.ModelAdmin):
+    search_fields = ['LandfillID']
+    autocomplete_fields = ['Manager']
+    ordering = ['LandfillID']
     list_display = ['LandfillID', 'Name', 'Location', 'Capacity', 'Latitude', 'Longitude',  'CreatedAt', 'UpdatedAt']
 
 @admin.register(WasteTransfer)
 class WasteTransferAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['Vehicle', 'Source', 'Destination']
     ordering = ['TransferID']
     list_display = ['TransferID', 'Vehicle', 'Source', 'Destination', 'Distance', 'VolumeOfWaste', 'TimeOfArrival', 'TimeOfDeparture', 'CreatedAt', 'UpdatedAt']
     
@@ -135,13 +142,6 @@ class DumpingEntryRecordAdmin(admin.ModelAdmin):
     autocomplete_fields = ['Vehicle']
     list_display = ['EntryID', 'Vehicle', 'Landfill', 'VolumeOfWaste', 'TimeOfArrival', 'TimeOfDeparture', 'CreatedAt', 'UpdatedAt']
 
-@admin.register(Permission)
-class PermissionsAdmin(admin.ModelAdmin):
-    list_display = ['PermissionID', 'Name', 'Description', 'CreatedAt', 'UpdatedAt']
-
-@admin.register(RolePermission)
-class RolePermissionAdmin(admin.ModelAdmin):
-    list_display = ['RolePermissionID', 'Role', 'Permission', 'CreatedAt', 'UpdatedAt']
 
 @admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
@@ -151,11 +151,17 @@ class RoleAdmin(admin.ModelAdmin):
 
 @admin.register(LandfillManager)
 class LandfillManagerAdmin(admin.ModelAdmin):
-    list_display = ['manager_name']
+    ordering = ['id']
+    search_fields = ['manager_name']
+    list_display = ['id', 'manager_name', 'user_first_name', 'user_last_name']
 
     def manager_name(self, obj):
         return obj.user.username  # Assuming 'username' is the field you want to display
-
+    def user_first_name(self, obj):
+        return obj.user.first_name
+    def user_last_name(self, obj):
+        return obj.user.last_name
+    
     def delete_queryset(self, request, queryset):
             # Update the role for all users associated with the queryset
             for manager in queryset:
@@ -167,11 +173,16 @@ class LandfillManagerAdmin(admin.ModelAdmin):
 
 @admin.register(STSManager)
 class STSManagerAdmin(admin.ModelAdmin):
-    list_display = ['manager_name']
+    ordering = ['id']
+    search_fields = ['manager_name']
+    list_display = ['id', 'manager_name', 'user_first_name', 'user_last_name']
 
     def manager_name(self, obj):
         return obj.user.username  # Assuming 'username' is the field you want to display
-    
+    def user_first_name(self, obj):
+        return obj.user.first_name
+    def user_last_name(self, obj):
+        return obj.user.last_name
     
     def delete_queryset(self, request, queryset):
         # Update the role for all users associated with the queryset
